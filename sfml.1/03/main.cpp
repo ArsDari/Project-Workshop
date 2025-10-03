@@ -4,6 +4,7 @@
 
 int main()
 {
+
     sf::ConvexShape triangle;
     triangle.setFillColor(sf::Color(0xFF, 0x80, 0));
     triangle.setPosition({ 200, 120 });
