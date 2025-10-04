@@ -5,6 +5,32 @@
 
 constexpr int pointCount = 200;
 constexpr sf::Vector2u windowSize{ 800, 600 };
+constexpr float orbitRadius = 100.f;
+constexpr float orbitSpeed = 1.f;
+
+static void pollEvents(sf::RenderWindow& window) {
+	while (const std::optional event = window.pollEvent()) {
+		if (event->is<sf::Event::Closed>()) {
+			window.close();
+		}
+	}
+}
+
+static void moveInCircle(float deltaTime, sf::ConvexShape& rose, float& orbitAngle) {
+	orbitAngle += orbitSpeed * deltaTime;
+	sf::Vector2f offset{
+		orbitRadius * std::cos(orbitAngle),
+		orbitRadius * std::sin(orbitAngle)
+	};
+	sf::Vector2f windowCenter{ windowSize.x / 2, windowSize.y / 2 };
+	rose.setPosition(windowCenter + offset);
+}
+
+static void draw(sf::RenderWindow& window, sf::ConvexShape& rose) {
+	window.clear();
+	window.draw(rose);
+	window.display();
+}
 
 int main() {
 	sf::ContextSettings settings;
@@ -29,31 +55,16 @@ int main() {
 		rose.setPoint(pointNo, point);
 	}
 
-	const float orbitRadius = 100.f;
-	const float orbitSpeed = 1.f;
-	float orbitAngle = 0.f;
 	sf::Clock clock;
+	float orbitAngle = 0.f;
 
 	while (window.isOpen()) {
-		while (const std::optional event = window.pollEvent()) {
-			if (event->is<sf::Event::Closed>()) {
-				window.close();
-			}
-		}
+		pollEvents(window);
 
 		float deltaTime = clock.restart().asSeconds();
-		orbitAngle += orbitSpeed * deltaTime;
-
-		sf::Vector2f offset{
-			orbitRadius * std::cos(orbitAngle),
-			orbitRadius * std::sin(orbitAngle)
-		};
-		sf::Vector2f windowCenter{ windowSize.x / 2, windowSize.y / 2 };
-		rose.setPosition(windowCenter + offset);
+		moveInCircle(deltaTime, rose, orbitAngle);
 		rose.rotate(sf::radians(deltaTime * M_PI_2));
 
-		window.clear();
-		window.draw(rose);
-		window.display();
+		draw(window, rose);
 	}
 }
