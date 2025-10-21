@@ -1,0 +1,7 @@
+#define SPEED_MOVEMENT 100.0f
+#define SPEED_ROTATION 90.0f
+#define TRESHHOLD_ANGLE 75.0f
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+#define ONE_VECT sf::Vector2f({1, 0})
+#define TRESHHOLD_POINT 8.0f
